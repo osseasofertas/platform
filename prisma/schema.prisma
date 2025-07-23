@@ -1,0 +1,62 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               Int            @id @default(autoincrement())
+  name             String
+  email            String         @unique
+  passwordHash     String
+  balance          Float          @default(50.0)
+  paypalAccount    String?
+  bankAccount      String?
+  registrationDate DateTime       @default(now())
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  transactions     Transaction[]
+  evaluations      Evaluation[]
+  dailyStats       DailyStats[]    // <--- relação inversa adicionada
+  loginBlocks      LoginBlock[]    // <--- relação inversa adicionada
+}
+
+model Transaction {
+  id          Int      @id @default(autoincrement())
+  user        User     @relation(fields: [userId], references: [id])
+  userId      Int
+  type        String
+  amount      Float
+  description String
+  date        DateTime @default(now())
+}
+
+model Evaluation {
+  id          Int      @id @default(autoincrement())
+  user        User     @relation(fields: [userId], references: [id])
+  userId      Int
+  contentId   Int
+  type        String
+  completedAt DateTime @default(now())
+  earning     Float
+}
+
+model DailyStats {
+  id          Int      @id @default(autoincrement())
+  user        User     @relation(fields: [userId], references: [id])
+  userId      Int
+  date        DateTime
+  evaluations Int
+  earned      Float
+}
+
+model LoginBlock {
+  id                Int      @id @default(autoincrement())
+  user              User     @relation(fields: [userId], references: [id])
+  userId            Int
+  globalLogoutDate  DateTime
+}
