@@ -20,9 +20,8 @@ services:
     ports:
       - '3000:3000'
     environment:
-      DATABASE_URL: postgres://onlysales:onlysales123@db:5432/onlysalesdb
+      DATABASE_URL: postgresql://postgres:MqvjUXaqIebDOmcPVTCwJWlPJTjScpsh@switchyard.proxy.rlwy.net:46877/railway
     depends_on:
       - db
 volumes:
   pgdata: 
-  
