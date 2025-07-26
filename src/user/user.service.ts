@@ -26,4 +26,11 @@ export class UserService {
       data,
     });
   }
+
+  async updateEvaluationLimit(id: number, evaluationLimit: number) {
+    return this.prisma.user.update({
+      where: { id },
+      data: { evaluationLimit },
+    });
+  }
 }

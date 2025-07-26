@@ -17,4 +17,9 @@ export class UserController {
   async updateProfile(@Req() req, @Body() body: { name?: string; paypalAccount?: string; bankAccount?: string }) {
     return this.userService.updateUser(req.user.userId, body);
   }
+
+  @Patch('evaluation-limit')
+  async updateEvaluationLimit(@Req() req, @Body() body: { evaluationLimit: number }) {
+    return this.userService.updateEvaluationLimit(req.user.userId, body.evaluationLimit);
+  }
 }
