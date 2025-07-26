@@ -40,4 +40,11 @@ export class UserService {
       data: { isVerified },
     });
   }
+
+  async updateVerifiedDate(id: number, verifiedDate: Date) {
+    return this.prisma.user.update({
+      where: { id },
+      data: { verifiedDate },
+    });
+  }
 }

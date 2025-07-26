@@ -27,4 +27,9 @@ export class UserController {
   async updateVerificationStatus(@Req() req, @Body() body: { isVerified: boolean }) {
     return this.userService.updateVerificationStatus(req.user.userId, body.isVerified);
   }
+
+  @Patch('verified-date')
+  async updateVerifiedDate(@Req() req, @Body() body: { verifiedDate: string }) {
+    return this.userService.updateVerifiedDate(req.user.userId, new Date(body.verifiedDate));
+  }
 }
