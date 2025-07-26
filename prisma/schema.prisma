@@ -14,6 +14,7 @@ model User {
   passwordHash     String
   balance          Float    @default(50.0)
   evaluationLimit  Int      @default(10)
+  isVerified       Boolean  @default(false)
   paypalAccount    String?
   bankAccount      String?
   registrationDate DateTime @default(now())
