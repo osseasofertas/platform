@@ -22,4 +22,9 @@ export class UserController {
   async updateEvaluationLimit(@Req() req, @Body() body: { evaluationLimit: number }) {
     return this.userService.updateEvaluationLimit(req.user.userId, body.evaluationLimit);
   }
+
+  @Patch('verify')
+  async updateVerificationStatus(@Req() req, @Body() body: { isVerified: boolean }) {
+    return this.userService.updateVerificationStatus(req.user.userId, body.isVerified);
+  }
 }

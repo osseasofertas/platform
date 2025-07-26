@@ -33,4 +33,11 @@ export class UserService {
       data: { evaluationLimit },
     });
   }
+
+  async updateVerificationStatus(id: number, isVerified: boolean) {
+    return this.prisma.user.update({
+      where: { id },
+      data: { isVerified },
+    });
+  }
 }
