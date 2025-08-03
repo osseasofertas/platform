@@ -27,7 +27,7 @@ export class QueueService {
     this.logger.log('Processing withdrawal queue...');
     
     try {
-      const pendingRequests = await this.withdrawalService.getWithdrawalQueue();
+      const pendingRequests = await this.withdrawalService.getWithdrawalQueueForProcessing();
       
       for (const request of pendingRequests) {
         // Process requests based on queue position and premium status

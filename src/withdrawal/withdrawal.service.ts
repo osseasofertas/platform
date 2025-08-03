@@ -6,7 +6,7 @@ import { WithdrawalRequest, User } from '@prisma/client';
 export class WithdrawalService {
   constructor(private prisma: PrismaService) {}
 
-  // Get withdrawal queue (all pending requests)
+  // Get withdrawal queue (all pending requests) - for admin view
   async getWithdrawalQueue(): Promise<WithdrawalRequest[]> {
     return this.prisma.withdrawalRequest.findMany({
       where: { status: 'pending' },
@@ -16,6 +16,26 @@ export class WithdrawalService {
             id: true,
             name: true,
             email: true,
+            queuePosition: true,
+            isPremiumReviewer: true,
+          },
+        },
+      },
+      orderBy: [
+        { user: { queuePosition: 'asc' } },
+        { requestDate: 'asc' },
+      ],
+    });
+  }
+
+  // Get withdrawal queue for processing (includes user data)
+  async getWithdrawalQueueForProcessing(): Promise<(WithdrawalRequest & { user: { id: number; queuePosition: number | null; isPremiumReviewer: boolean } })[]> {
+    return this.prisma.withdrawalRequest.findMany({
+      where: { status: 'pending' },
+      include: {
+        user: {
+          select: {
+            id: true,
             queuePosition: true,
             isPremiumReviewer: true,
           },
