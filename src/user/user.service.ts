@@ -47,4 +47,50 @@ export class UserService {
       data: { verifiedDate },
     });
   }
+
+  // New methods for withdrawal queue system
+  async updateQueuePosition(id: number, queuePosition: number) {
+    return this.prisma.user.update({
+      where: { id },
+      data: { queuePosition },
+    });
+  }
+
+  async makePremiumReviewer(id: number) {
+    return this.prisma.user.update({
+      where: { id },
+      data: {
+        isPremiumReviewer: true,
+        premiumReviewerDate: new Date(),
+      },
+    });
+  }
+
+  async getQueuePosition(id: number): Promise<number> {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+      select: { queuePosition: true },
+    });
+    return user?.queuePosition || 0;
+  }
+
+  async updateAllQueuePositions(): Promise<void> {
+    const users = await this.prisma.user.findMany({
+      where: {
+        isVerified: true,
+        isPremiumReviewer: false,
+      },
+      orderBy: [
+        { verifiedDate: 'asc' },
+        { registrationDate: 'asc' },
+      ],
+    });
+
+    for (let i = 0; i < users.length; i++) {
+      await this.prisma.user.update({
+        where: { id: users[i].id },
+        data: { queuePosition: i + 1 },
+      });
+    }
+  }
 }

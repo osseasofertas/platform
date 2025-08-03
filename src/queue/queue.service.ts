@@ -1,0 +1,60 @@
+import { Injectable, Logger } from '@nestjs/common';
+import { Cron, CronExpression } from '@nestjs/schedule';
+import { WithdrawalService } from '../withdrawal/withdrawal.service';
+
+@Injectable()
+export class QueueService {
+  private readonly logger = new Logger(QueueService.name);
+
+  constructor(private readonly withdrawalService: WithdrawalService) {}
+
+  // Run daily at 2 AM to update queue positions
+  @Cron(CronExpression.EVERY_DAY_AT_2AM)
+  async updateQueuePositions() {
+    this.logger.log('Starting daily queue position update...');
+    
+    try {
+      await this.withdrawalService.updateQueuePositions();
+      this.logger.log('Queue positions updated successfully');
+    } catch (error) {
+      this.logger.error('Failed to update queue positions:', error);
+    }
+  }
+
+  // Process withdrawal queue every hour
+  @Cron(CronExpression.EVERY_HOUR)
+  async processWithdrawalQueue() {
+    this.logger.log('Processing withdrawal queue...');
+    
+    try {
+      const pendingRequests = await this.withdrawalService.getWithdrawalQueue();
+      
+      for (const request of pendingRequests) {
+        // Process requests based on queue position and premium status
+        if (request.user.isPremiumReviewer) {
+          // Premium reviewers get priority
+          this.logger.log(`Processing premium reviewer request: ${request.id}`);
+          // Add your processing logic here
+        } else {
+          // Regular users processed in queue order
+          this.logger.log(`Processing regular user request: ${request.id} (position: ${request.user.queuePosition})`);
+          // Add your processing logic here
+        }
+      }
+    } catch (error) {
+      this.logger.error('Failed to process withdrawal queue:', error);
+    }
+  }
+
+  // Manual trigger for queue position update
+  async manualUpdateQueuePositions() {
+    this.logger.log('Manual queue position update triggered...');
+    await this.updateQueuePositions();
+  }
+
+  // Manual trigger for queue processing
+  async manualProcessQueue() {
+    this.logger.log('Manual queue processing triggered...');
+    await this.processWithdrawalQueue();
+  }
+} 

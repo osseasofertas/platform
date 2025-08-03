@@ -8,24 +8,40 @@ datasource db {
 }
 
 model User {
-  id               Int       @id @default(autoincrement())
-  name             String
-  email            String    @unique
-  passwordHash     String
-  balance          Float     @default(50.0)
-  evaluationLimit  Int       @default(10)
-  isVerified       Boolean   @default(false)
-  verifiedDate     DateTime?
-  paypalAccount    String?
-  bankAccount      String?
-  registrationDate DateTime  @default(now())
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
+  id                  Int       @id @default(autoincrement())
+  name                String
+  email               String    @unique
+  passwordHash        String
+  balance             Float     @default(50.0)
+  evaluationLimit     Int       @default(10)
+  isVerified          Boolean   @default(false)
+  verifiedDate        DateTime?
+  paypalAccount       String?
+  bankAccount         String?
+  registrationDate    DateTime  @default(now())
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  // Withdrawal queue fields
+  queuePosition       Int?      @default(0)
+  isPremiumReviewer   Boolean   @default(false)
+  premiumReviewerDate DateTime?
 
-  transactions Transaction[]
-  evaluations  Evaluation[]
-  dailyStats   DailyStats[] // <--- relação inversa adicionada
-  loginBlocks  LoginBlock[] // <--- relação inversa adicionada
+  transactions       Transaction[]
+  evaluations        Evaluation[]
+  dailyStats         DailyStats[] // <--- relação inversa adicionada
+  loginBlocks        LoginBlock[] // <--- relação inversa adicionada
+  withdrawalRequests WithdrawalRequest[]
+}
+
+model WithdrawalRequest {
+  id            Int       @id @default(autoincrement())
+  user          User      @relation(fields: [userId], references: [id])
+  userId        Int
+  amount        Float
+  status        String    @default("pending") // pending, approved, rejected, processed
+  requestDate   DateTime  @default(now())
+  processedDate DateTime?
+  notes         String?
 }
 
 model Transaction {
