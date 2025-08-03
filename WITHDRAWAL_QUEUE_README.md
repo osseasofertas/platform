@@ -34,8 +34,8 @@ This implementation adds a comprehensive withdrawal queue system to your NestJS 
 
 ### 3. Queue Processing Logic
 
-- **Automatic Queue Updates**: Daily at 2 AM
-- **Queue Processing**: Every hour
+- **Automatic Queue Updates**: Daily at 2 AM (using manual scheduling)
+- **Queue Processing**: Every hour (using manual scheduling)
 - **Priority System**: Premium reviewers get priority
 - **Fair Queue**: Regular users processed by verification date and registration date
 
@@ -70,13 +70,7 @@ PAYPAL_MODE="sandbox" # or "live"
 npx prisma migrate dev --name add_withdrawal_queue_system
 ```
 
-### 2. Install Dependencies
-
-```bash
-npm install @nestjs/schedule
-```
-
-### 3. Generate Prisma Client
+### 2. Generate Prisma Client
 
 ```bash
 npx prisma generate
@@ -130,6 +124,14 @@ Content-Type: application/json
 2. Regular user requests (by queue position)
 3. Requests within same position (by request date)
 
+## Scheduling System
+
+The system uses manual scheduling instead of cron decorators for better compatibility:
+
+- **Daily Queue Updates**: Automatically scheduled to run at 2 AM
+- **Hourly Processing**: Automatically scheduled to run every hour
+- **Manual Triggers**: Available via API endpoints for immediate execution
+
 ## Security Features
 
 - JWT authentication required for all endpoints
@@ -163,3 +165,4 @@ Test the endpoints in this order:
 - Queue positions are automatically calculated daily
 - Premium reviewers bypass the queue entirely
 - All withdrawal amounts are deducted from balance immediately upon request creation
+- The system uses manual scheduling for better Node.js compatibility
