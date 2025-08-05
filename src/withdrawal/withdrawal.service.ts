@@ -250,10 +250,8 @@ export class WithdrawalService {
       }
 
       const position = user.queuePosition || 0;
-      console.log(`User ${userId} queue position: ${position}`);
       return position;
     } catch (error) {
-      console.error(`Error getting queue position for user ${userId}:`, error);
       if (error instanceof NotFoundException) {
         throw error;
       }
