@@ -3,17 +3,34 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  // Configure CORS
   app.enableCors({
     origin: [
+      'http://localhost:3000',
       'http://localhost:5173',
+      'http://localhost:3001',
       'https://platform-production-f017.up.railway.app',
       'https://ospltform-front.vercel.app',
-      'https://onlyplatformreviewer.vercel.app'
+      'https://onlyplatformreviewer.vercel.app',
+      'https://onlyplatformreviewer.vercel.app/',
     ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'X-Requested-With',
+      'Accept',
+      'Origin',
+      'Access-Control-Request-Method',
+      'Access-Control-Request-Headers',
+    ],
+    exposedHeaders: ['Content-Length', 'X-Foo', 'X-Bar'],
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
   });
+
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();
