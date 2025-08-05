@@ -59,17 +59,13 @@ export class WithdrawalService {
 
   // Create a new withdrawal request
   async createWithdrawalRequest(userId: number, amount: number): Promise<WithdrawalRequest> {
-    // Check if user exists and has sufficient balance
+    // Check if user exists
     const user = await this.prisma.user.findUnique({
       where: { id: userId },
     });
 
     if (!user) {
       throw new NotFoundException('User not found');
-    }
-
-    if (user.balance < amount) {
-      throw new BadRequestException('Insufficient balance');
     }
 
     if (amount <= 0) {
