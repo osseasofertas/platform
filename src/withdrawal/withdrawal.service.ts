@@ -239,23 +239,15 @@ export class WithdrawalService {
 
   // Get user's queue position
   async getUserQueuePosition(userId: number): Promise<number> {
-    try {
-      const user = await this.prisma.user.findUnique({
-        where: { id: userId },
-        select: { queuePosition: true },
-      });
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { queuePosition: true },
+    });
 
-      if (!user) {
-        throw new NotFoundException(`User with ID ${userId} not found`);
-      }
-
-      const position = user.queuePosition || 0;
-      return position;
-    } catch (error) {
-      if (error instanceof NotFoundException) {
-        throw error;
-      }
-      throw new NotFoundException(`Failed to get queue position for user ${userId}`);
+    if (!user) {
+      throw new NotFoundException('User not found');
     }
+
+    return user.queuePosition || 0;
   }
 } 
