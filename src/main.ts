@@ -7,6 +7,7 @@ async function bootstrap() {
   // Configure CORS
   app.enableCors({
     origin: [
+      'https://platform-production-f017.up.railway.app',
       'https://onlyreviewplat.vercel.app',
     ],
     credentials: true,
