@@ -2,11 +2,14 @@ FROM node:18
 
 WORKDIR /usr/src/app
 
-# Copia todos os arquivos do projeto antes da instalação
-COPY . .
+# Copia package.json primeiro para melhor cache
+COPY package*.json ./
 
 # Instala dependências
 RUN npm install
+
+# Copia o resto dos arquivos
+COPY . .
 
 # Gera o Prisma Client
 RUN npx prisma generate
