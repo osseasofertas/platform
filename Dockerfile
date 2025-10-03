@@ -5,14 +5,14 @@ WORKDIR /usr/src/app
 # Copia package.json primeiro para melhor cache
 COPY package*.json ./
 
-# Instala dependências
+# Copia o schema do Prisma antes da instalação
+COPY prisma ./prisma/
+
+# Instala dependências (isso vai executar prisma generate via postinstall)
 RUN npm install
 
 # Copia o resto dos arquivos
 COPY . .
-
-# Gera o Prisma Client
-RUN npx prisma generate
 
 # Compila o projeto NestJS
 RUN npm run build
