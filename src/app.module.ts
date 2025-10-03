@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config'; // ✅ importe aqui
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { PrismaService } from './prisma.service';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { TransactionModule } from './transaction/transaction.module';
@@ -24,7 +25,7 @@ import { ErrorHandlerMiddleware } from './middleware/error-handler.middleware';
     QueueModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, PrismaService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
